@@ -14,12 +14,14 @@ passport.deserializeUser((user, done) => {
 		done(null, user);
 	});
 });
+
 passport.use(
 	new GoogleStrategy(
 		{
 			clientID: keys.googleClientID,
 			clientSecret: keys.googleClientSecret,
 			callbackURL: "/auth/google/callback",
+			proxy: true, //so it can fix redirect problem (i.e. tells Google to trust a proxy)
 		},
 		(accessToken, refreshToken, profile, done) => {
 			User.findOne({ googleID: profile.id }).then((existingUser) => {
